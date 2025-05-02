@@ -24,13 +24,23 @@
             text-shadow: 0 0 8px #87CEEB;
         }
 
-        #gameSetup, #gameArea {
+        #gameSetup {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 95%; /* Make setup area responsive */
             max-width: 600px; /* Max width for larger screens */
         }
+
+        #gameArea {
+            display: none; /* Hidden by default */
+            flex-direction: column; /* Stack canvas and controls */
+            align-items: center;
+            width: 95%; /* Use a percentage width */
+            max-width: 600px; /* LIMIT the maximum width on larger screens */
+            margin: 0 auto; /* Center the game area */
+        }
+
 
         #themeSelection {
             margin: 15px 0;
@@ -95,24 +105,25 @@
             border: 3px solid #4682B4;
             background-color: #000015;
             display: block;
-            margin: 10px auto;
+            /* Removed margin: 10px auto; - let parent #gameArea handle centering */
             box-shadow: 0 0 15px #4682B4;
-            width: 95%; /* Make canvas responsive */
-            max-width: 600px; /* Max width for canvas */
+            width: 100%; /* Fill the width of the parent #gameArea */
             height: auto; /* Maintain aspect ratio */
-            aspect-ratio: 600 / 450; /* Maintain original aspect ratio */
+            /* Reverted to original 4:3 aspect ratio */
+            aspect-ratio: 4 / 3; /* Original 600/450 */
         }
 
         #gameInfo {
             display: flex;
             justify-content: space-around;
-            width: 95%; /* Make game info responsive */
-            max-width: 600px; /* Max width for game info */
+            width: 100%; /* Fill the width of the parent #gameArea */
             margin-bottom: 10px;
             font-size: 1.1em; /* Adjust font size for smaller screens */
             font-weight: 700;
             color: #87CEEB;
             text-shadow: 0 0 5px #87CEEB;
+             box-sizing: border-box; /* Include padding in width */
+             padding: 0 10px; /* Add some padding */
         }
 
         #instructions {
@@ -166,13 +177,6 @@
             background-color: #87CEEB;
             color: #111;
             box-shadow: 0 0 10px #87CEEB;
-        }
-
-        #gameArea {
-            display: none;
-            flex-direction: column; /* Stack canvas and controls */
-            align-items: center;
-            width: 100%; /* Use full width for game area */
         }
 
         /* High Score specific styles */
@@ -267,9 +271,10 @@
         #touchControls {
             display: none; /* Hidden by default */
             justify-content: space-around;
-            width: 95%;
-            max-width: 600px;
+            width: 100%; /* Fill the width of the parent #gameArea */
             margin-top: 15px;
+             box-sizing: border-box; /* Include padding in width */
+             padding: 0 5px; /* Add some padding */
         }
 
         .touch-button {
@@ -292,6 +297,15 @@
             text-align: center;
         }
 
+        .touch-button:first-child {
+             margin-left: 0;
+        }
+
+         .touch-button:last-child {
+             margin-right: 0;
+         }
+
+
         .touch-button:active {
              background-color: #87CEEB;
              color: #111;
@@ -313,9 +327,8 @@
 
             #gameInfo {
                 font-size: 1em;
-                width: 100%;
-                padding: 0 10px; /* Add some padding */
-                box-sizing: border-box;
+                width: 100%; /* Fill parent width */
+                padding: 0 5px; /* Adjust padding */
             }
 
             #instructions {
@@ -326,16 +339,21 @@
             }
 
             canvas {
-                width: 98%; /* Slightly larger on very small screens */
+                width: 100%; /* Fill parent width */
+                 /* Keep 4:3 aspect ratio even on mobile, rely on parent width limit */
+                aspect-ratio: 4 / 3;
             }
 
             #touchControls {
                 display: flex; /* Show touch controls on small screens */
+                width: 100%; /* Fill parent width */
+                padding: 0 5px; /* Adjust padding */
             }
 
              .touch-button {
-                 padding: 12px 20px; /* Smaller padding for buttons */
+                 padding: 12px 15px; /* Smaller padding for buttons */
                  font-size: 1em; /* Smaller font for buttons */
+                 margin: 0 3px; /* Adjust margin */
              }
         }
 
@@ -518,7 +536,8 @@
         const MAX_HIGH_SCORES = 10;
 
         // --- Difficulty Settings (Hardcoded to Expert's base values) ---
-        const EXPERT_BASE_SPEED = 2.2;
+        // MODIFIED: Reduced base speed for slower blocks
+        const EXPERT_BASE_SPEED = 1.8; /* Reduced from 2.2 */
         const EXPERT_BASE_SPAWN_INTERVAL = 2000;
         const EXPERT_SPEED_INCREASE_FACTOR = 1.8;
 
@@ -561,8 +580,10 @@
         // --- Game Objects ---
         // Player object - MODIFIED initial y calculation
         const player = {
-            x: canvas.width / 2 - 25,
-            y: canvas.height - 50, // This will be updated in resetGame and on resize
+            // Initial x is set in resetGame
+            x: 0,
+            // Initial y is set in resetGame and on resize
+            y: 0,
             width: 50,
             height: 25,
             draw() {
@@ -852,11 +873,12 @@
             gameAreaDiv.style.display = 'none';
         }
 
-        // MODIFIED: Reset Game - Update player Y position based on current canvas height
+        // MODIFIED: Reset Game - Update player X and Y position based on current canvas size
         function resetGame() {
              score = 0; gameTimeRemaining = GAME_DURATION_SECONDS; gameOver = false;
              activeWordPairs = []; // Reset activeWordPairs
              bullets = []; fragments = []; scorePopups = [];
+             // Set player X position to the center of the current canvas width
              player.x = canvas.width / 2 - player.width / 2;
              // Set player Y position relative to the current canvas height
              player.y = canvas.height - player.height - PLAYER_BOTTOM_PADDING;
@@ -869,8 +891,8 @@
              themeDisplayElement.textContent = `Theme: ${currentThemeData ? currentThemeData.themeName : '-'}`;
 
              gameOverScreen.style.display = 'none';
-             gameSetupDiv.style.display = 'none';
-             gameAreaDiv.style.display = 'flex';
+             gameSetupDiv.style.display = 'flex'; // Show setup again to choose theme
+             gameAreaDiv.style.display = 'none'; // Hide game area
              if (timerIntervalId) clearInterval(timerIntervalId); timerIntervalId = null;
              if (animationFrameId) cancelAnimationFrame(animationFrameId); animationFrameId = null;
         }
@@ -888,6 +910,10 @@
              }
 
              resetGame(); // Reset all game state
+
+             // Hide setup and show game area
+             gameSetupDiv.style.display = 'none';
+             gameAreaDiv.style.display = 'flex';
 
              if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(e => console.error("Error resuming AudioContext:", e)); }
              else if (!audioCtx) { setupAudio(); }
@@ -970,17 +996,18 @@
             }, 3000); // Message disappears after 3 seconds
         }
 
-        // MODIFIED: Canvas Resize Observer - Update player Y position on resize
+        // MODIFIED: Canvas Resize Observer - Update player Y position and redraw on resize
         const resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
                 const { width } = entry.contentRect;
-                // Maintain aspect ratio (600x450)
-                const height = (width / 600) * 450;
-                canvas.width = width;
-                canvas.height = height;
+                 // The canvas width is now controlled by the parent #gameArea max-width
+                 // The canvas height is automatically set by aspect-ratio based on its width
+                 const height = canvas.height; // Get the height set by aspect-ratio
 
-                // Update player Y position based on the new canvas height
+                // Update player X and Y position based on the new canvas size
+                player.x = canvas.width / 2 - player.width / 2;
                 player.y = canvas.height - player.height - PLAYER_BOTTOM_PADDING;
+
 
                 // Redraw game elements after resize (optional, but good practice)
                 if (animationFrameId) {
@@ -1002,6 +1029,7 @@
         window.addEventListener('keyup', (e) => { const key = e.key.toLowerCase() === ' ' ? 'spacebar' : e.key.toLowerCase(); keysPressed[key] = false; });
 
         startButton.addEventListener('click', startGame);
+        // Play Again button now shows the game setup screen
         playAgainButton.addEventListener('click', () => { gameOverScreen.style.display = 'none'; gameSetupDiv.style.display = 'flex'; });
 
         // Theme selector change listener
@@ -1038,12 +1066,8 @@
 
          // Optional: Handle initial canvas size on load
          window.addEventListener('load', () => {
-             const { width } = canvas.getBoundingClientRect();
-             const height = (width / 600) * 450;
-             canvas.width = width;
-             canvas.height = height;
-             // Set player Y position based on the initial canvas height
-             player.y = canvas.height - player.height - PLAYER_BOTTOM_PADDING;
+             // The canvas width and height will be set by CSS and aspect-ratio
+             // The resize observer will handle the initial player positioning
          });
 
 
