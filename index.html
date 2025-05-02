@@ -29,7 +29,18 @@
             margin-top: 20px;
             margin-bottom: 30px;
             font-weight: 700;
+            transition: opacity 0.3s ease-in-out; /* Added transition for hiding */
         }
+
+        h1.hidden {
+            opacity: 0;
+            height: 0; /* Collapse height when hidden */
+            margin-top: 0;
+            margin-bottom: 0;
+            overflow: hidden;
+            pointer-events: none; /* Prevent interaction */
+        }
+
 
         #gameSetup, #gameArea {
             display: flex;
@@ -134,7 +145,7 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Deeper shadow */
             width: 100%; /* Fill the width of the parent #gameArea */
             height: auto; /* Maintain aspect ratio */
-            aspect-ratio: 4 / 3; /* Original 600/450 */
+            aspect-ratio: 4 / 3; /* Default 600/450 aspect ratio */
             border-radius: 8px; /* Rounded corners */
             /* Canvas background will be drawn dynamically in JS */
         }
@@ -379,8 +390,8 @@
 
             canvas {
                 width: 100%; /* Fill parent width */
-                 /* Keep 4:3 aspect ratio even on mobile, rely on parent width limit */
-                aspect-ratio: 4 / 3;
+                 /* MODIFIED: Taller aspect ratio for smaller screens */
+                aspect-ratio: 3 / 4; /* Example: A bit taller than 4:3 */
             }
 
             #touchControls {
@@ -400,7 +411,7 @@
 </head>
 <body>
 
-    <h1>Vocabulary Voyager</h1>
+    <h1 id="mainTitle">Vocabulary Voyager</h1>
 
     <div id="gameSetup">
         <div id="themeSelection">
@@ -530,6 +541,7 @@
 
 
         // --- DOM Elements ---
+        const mainTitle = document.getElementById('mainTitle'); // Get the main title element
         const gameSetupDiv = document.getElementById('gameSetup');
         const gameAreaDiv = document.getElementById('gameArea');
         const canvas = document.getElementById('gameCanvas');
@@ -965,6 +977,9 @@
 
             gameOverScreen.style.display = 'block';
             gameAreaDiv.style.display = 'none';
+
+            // ADDED: Show the main title again
+            mainTitle.classList.remove('hidden');
         }
 
         // MODIFIED: Reset Game - Update player X and Y position based on current canvas size, create stars
@@ -988,6 +1003,9 @@
              gameSetupDiv.style.display = 'flex'; // Show setup again to choose theme
              gameAreaDiv.style.display = 'none'; // Hide game area
 
+             // ADDED: Hide the main title
+             mainTitle.classList.add('hidden');
+
              // ADDED: Create stars on reset
              createStars();
 
@@ -1007,7 +1025,7 @@
                  return;
              }
 
-             resetGame(); // Reset all game state
+             resetGame(); // Reset all game state (which now hides the title)
 
              // Hide setup and show game area
              gameSetupDiv.style.display = 'none';
@@ -1094,7 +1112,7 @@
             }, 3000); // Message disappears after 3 seconds
         }
 
-        // MODIFIED: Canvas Resize Observer - Update player Y position and redraw on resize
+        // MODIFIED: Canvas Resize Observer - Update player Y position and redraw on resize, recreate stars
         const resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
                 // The canvas width and height are now controlled by CSS and aspect-ratio
