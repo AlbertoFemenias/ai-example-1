@@ -4,132 +4,158 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vocabulary Voyager - Vocabulary Subject Selector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Styles */
+        /* CSS Styles - Refactored for a more professional look */
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #111;
-            color: #eee;
+            /* Changed font to Inter, fallback to sans-serif */
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #1a1a2e, #0f0f1a); /* Darker, richer background with subtle gradient */
+            color: #e0e0e0; /* Softer text color */
             margin: 0;
-            padding-bottom: 20px;
+            padding-bottom: 30px; /* Increased padding */
             overflow-x: hidden; /* Prevent horizontal scrolling */
+            line-height: 1.6; /* Improved readability */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
         }
 
         h1 {
             text-align: center;
-            color: #87CEEB;
-            text-shadow: 0 0 8px #87CEEB;
+            color: #94a3b8; /* Softer heading color */
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* More subtle shadow */
+            margin-top: 20px;
+            margin-bottom: 30px;
+            font-weight: 700;
         }
 
-        #gameSetup {
+        #gameSetup, #gameArea {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 95%; /* Make setup area responsive */
-            max-width: 600px; /* Max width for larger screens */
+            max-width: 650px; /* Slightly increased max width */
+            background-color: #2a2a4a; /* Slightly lighter container background */
+            padding: 20px;
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+            margin-bottom: 20px;
         }
 
         #gameArea {
             display: none; /* Hidden by default */
-            flex-direction: column; /* Stack canvas and controls */
-            align-items: center;
-            width: 95%; /* Use a percentage width */
-            max-width: 600px; /* LIMIT the maximum width on larger screens */
-            margin: 0 auto; /* Center the game area */
+            padding: 10px; /* Reduced padding around canvas */
+            background-color: transparent; /* No background on game area, canvas has its own */
+            box-shadow: none; /* No shadow on game area, canvas has its own */
         }
 
 
         #themeSelection {
             margin: 15px 0;
-            padding: 15px;
-            background-color: #222;
-            border: 1px solid #4682B4;
-            border-radius: 5px;
-            color: #87CEEB;
+            padding: 20px; /* Increased padding */
+            background-color: #3a3a5a; /* Distinct background for selector */
+            border: 1px solid #4a4a6a; /* Softer border */
+            border-radius: 8px; /* Rounded corners */
+            color: #c0c0d0; /* Lighter text */
             text-align: center;
             width: 100%; /* Make theme selection responsive */
             box-sizing: border-box; /* Include padding and border in element's total width */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Inner shadow */
         }
 
         #themeSelection label {
-            margin-right: 10px;
-            display: block; /* Stack label and select on small screens */
-            margin-bottom: 8px; /* Add space below label */
+            margin-right: 15px; /* Increased margin */
+            display: inline-block; /* Keep inline on larger screens */
+            margin-bottom: 0; /* Reset margin */
+            font-weight: 700;
         }
 
         #themeSelector {
-            padding: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #333;
-            color: #eee;
-            border: 1px solid #87CEEB;
-            border-radius: 3px;
+            padding: 10px 15px; /* Increased padding */
+            font-family: 'Inter', sans-serif; /* Use Inter font */
+            font-size: 1em;
+            background-color: #4a4a6a; /* Darker background */
+            color: #e0e0e0; /* Lighter text */
+            border: 1px solid #6a6a8a; /* Softer border */
+            border-radius: 5px; /* Rounded corners */
             cursor: pointer;
-            min-width: 150px;
-            width: 80%; /* Make selector responsive */
-            max-width: 300px; /* Max width for selector */
+            min-width: 180px; /* Increased min width */
+            width: auto; /* Auto width on desktop */
+            appearance: none; /* Remove default dropdown arrow */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e0e0e0%22%20d%3D%22M287%2C114.7L159.3%2C242.5c-5.8%2C5.8-15.2%2C5.8-21%2C0L5.4%2C114.7c-5.8-5.8-5.8-15.2%2C0-21l19.8-19.8c5.8-5.8%2C15.2-5.8%2C21%2C0l103.1%2C103.1L246.2%2C73.9c5.8-5.8%2C15.2-5.8%2C21%2C0l19.8%2C19.8C292.8%2C99.5%2C292.8%2C108.9%2C287%2C114.7z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px center; /* Center arrow vertically */
+            background-size: 12px auto;
         }
 
+        #themeSelector:focus {
+            border-color: #7a7ae0; /* Highlight on focus */
+            outline: none;
+            box-shadow: 0 0 5px rgba(122, 122, 224, 0.5);
+        }
+
+
         #startButton {
-            padding: 12px 25px;
-            font-size: 1.1em;
-            font-family: 'Courier New', Courier, monospace;
+            padding: 12px 30px; /* Increased padding */
+            font-size: 1.2em; /* Slightly larger font */
+            font-family: 'Inter', sans-serif; /* Use Inter font */
             cursor: pointer;
-            margin-top: 15px;
-            background-color: #333;
-            color: #87CEEB;
-            border: 1px solid #87CEEB;
-            box-shadow: 0 0 5px #87CEEB inset;
-            transition: background-color .2s, color .2s;
+            margin-top: 20px; /* Increased margin */
+            background: linear-gradient(to bottom, #6a6a8a, #4a4a6a); /* Subtle gradient */
+            color: #e0e0e0; /* Lighter text */
+            border: 1px solid #7a7ae0; /* Border color */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow */
+            transition: background-color .2s, color .2s, box-shadow .2s;
             border-radius: 5px;
+            font-weight: 700;
         }
 
         #startButton:hover {
-            background-color: #87CEEB;
-            color: #111;
-            box-shadow: 0 0 10px #87CEEB;
+            background: linear-gradient(to bottom, #7a7ae0, #6a6a8a); /* Gradient on hover */
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(122, 122, 224, 0.7); /* Glow effect */
         }
 
         #startButton:disabled {
-            background-color: #555;
-            color: #888;
-            border-color: #777;
+            background: #5a5a7a; /* Darker disabled background */
+            color: #a0a0b0; /* Dimmed text */
+            border-color: #6a6a8a;
             cursor: not-allowed;
             box-shadow: none;
         }
 
         canvas {
-            border: 3px solid #4682B4;
-            background-color: #000015;
+            border: 3px solid #5a5a7a; /* Softer border color */
+            background-color: #111122; /* Slightly different dark background */
             display: block;
-            /* Removed margin: 10px auto; - let parent #gameArea handle centering */
-            box-shadow: 0 0 15px #4682B4;
+            margin: 0 auto 10px auto; /* Center and add bottom margin */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Deeper shadow */
             width: 100%; /* Fill the width of the parent #gameArea */
             height: auto; /* Maintain aspect ratio */
-            /* Reverted to original 4:3 aspect ratio */
             aspect-ratio: 4 / 3; /* Original 600/450 */
+            border-radius: 8px; /* Rounded corners */
+            /* Canvas background will be drawn dynamically in JS */
         }
 
         #gameInfo {
             display: flex;
             justify-content: space-around;
             width: 100%; /* Fill the width of the parent #gameArea */
-            margin-bottom: 10px;
-            font-size: 1.1em; /* Adjust font size for smaller screens */
+            margin-bottom: 15px; /* Increased margin */
+            font-size: 1.1em;
             font-weight: 700;
-            color: #87CEEB;
-            text-shadow: 0 0 5px #87CEEB;
+            color: #94a3b8; /* Softer color */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
              box-sizing: border-box; /* Include padding in width */
              padding: 0 10px; /* Add some padding */
         }
 
         #instructions {
-            margin-top: 10px;
+            margin-top: 20px; /* Increased margin */
             text-align: center;
-            color: #aaa;
+            color: #b0b0c0; /* Lighter gray */
             font-size: .9em;
             width: 95%; /* Make instructions responsive */
             max-width: 600px; /* Max width for instructions */
@@ -141,65 +167,69 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, .9); /* Slightly darker overlay */
-            border: 2px solid #4682B4;
-            box-shadow: 0 0 15px #4682B4;
-            border-radius: 10px;
-            padding: 30px;
+            background-color: rgba(0, 0, 0, .95); /* More opaque overlay */
+            border: 2px solid #5a5a7a; /* Softer border */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); /* Stronger shadow */
+            border-radius: 12px; /* More rounded corners */
+            padding: 40px; /* Increased padding */
             text-align: center;
             z-index: 10;
-            color: #87CEEB;
+            color: #94a3b8; /* Softer color */
             width: 90%; /* Make game over screen responsive */
-            max-width: 450px;
+            max-width: 500px; /* Slightly increased max width */
             box-sizing: border-box;
         }
 
         #gameOverScreen h2 {
             margin-top: 0;
-            text-shadow: 0 0 8px #87CEEB;
+            text-shadow: 0 0 10px rgba(148, 163, 184, 0.7); /* Glow effect */
+            color: #c0c0d0; /* Lighter heading */
         }
 
         #playAgainButton {
-            padding: 10px 20px;
-            font-size: 1em;
-            font-family: 'Courier New', Courier, monospace;
+            padding: 12px 25px; /* Increased padding */
+            font-size: 1.1em; /* Slightly larger font */
+            font-family: 'Inter', sans-serif; /* Use Inter font */
             cursor: pointer;
-            margin-top: 15px;
-            background-color: #222;
-            color: #87CEEB;
-            border: 1px solid #87CEEB;
-            box-shadow: 0 0 5px #87CEEB inset;
-            transition: background-color .2s, color .2s;
+            margin-top: 20px; /* Increased margin */
+            background: linear-gradient(to bottom, #6a6a8a, #4a4a6a); /* Subtle gradient */
+            color: #e0e0e0; /* Lighter text */
+            border: 1px solid #7a7ae0; /* Border color */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow */
+            transition: background-color .2s, color .2s, box-shadow .2s;
             border-radius: 5px;
+            font-weight: 700;
         }
 
-        #playAgainButton:hover {
-            background-color: #87CEEB;
-            color: #111;
-            box-shadow: 0 0 10px #87CEEB;
+         #playAgainButton:hover {
+            background: linear-gradient(to bottom, #7a7ae0, #6a6a8a); /* Gradient on hover */
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(122, 122, 224, 0.7); /* Glow effect */
         }
+
 
         /* High Score specific styles */
         #highScoreDisplay {
-            margin-top: 20px;
+            margin-top: 25px; /* Increased margin */
             text-align: left;
             width: 90%; /* Make high score display responsive */
-            max-width: 250px; /* Max width */
+            max-width: 300px; /* Increased max width */
             margin-left: auto;
             margin-right: auto;
-            background-color: rgba(34, 34, 34, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #333;
+            background-color: rgba(58, 58, 90, 0.7); /* Background matching theme selection */
+            padding: 15px; /* Increased padding */
+            border-radius: 8px; /* Rounded corners */
+            border: 1px solid #4a4a6a; /* Softer border */
             box-sizing: border-box;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Inner shadow */
         }
 
         #highScoreDisplay h3 {
             margin-top: 0;
-            margin-bottom: 10px;
+            margin-bottom: 15px; /* Increased margin */
             text-align: center;
-            color: #87CEEB;
-            text-shadow: 0 0 3px #87CEEB;
+            color: #c0c0d0; /* Lighter text */
+            text-shadow: 0 0 5px rgba(192, 192, 208, 0.5); /* Glow effect */
         }
 
         #highScoreList {
@@ -207,14 +237,14 @@
             list-style-position: inside;
             padding-left: 5px;
             margin: 0;
-            font-size: 0.9em;
-            color: #ddd;
+            font-size: 1em; /* Slightly larger font */
+            color: #b0b0c0; /* Lighter gray */
         }
 
         #highScoreList li {
-            margin-bottom: 4px;
-            border-bottom: 1px dashed #444;
-            padding-bottom: 2px;
+            margin-bottom: 6px; /* Increased margin */
+            border-bottom: 1px dashed #6a6a8a; /* Softer dashed line */
+            padding-bottom: 4px; /* Increased padding */
         }
 
         #highScoreList li:last-child {
@@ -222,71 +252,79 @@
         }
 
         #highScoreEntry {
-            background-color: rgba(50, 50, 50, 0.8);
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #4682B4;
+            background-color: rgba(68, 68, 100, 0.8); /* Slightly lighter background */
+            padding: 20px; /* Increased padding */
+            border-radius: 8px; /* Rounded corners */
+            border: 1px solid #5a5a7a; /* Softer border */
+            margin-top: 20px; /* Increased margin */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Inner shadow */
         }
 
         #highScoreEntry label {
-            margin-right: 5px;
+            margin-right: 8px; /* Increased margin */
+            font-weight: 700;
         }
 
         #highScoreEntry input {
             text-transform: uppercase;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1em;
-            padding: 5px;
-            border: 1px solid #87CEEB;
-            background-color: #111;
-            color: #eee;
-            width: 50px;
+            font-family: 'Inter', sans-serif; /* Use Inter font */
+            font-size: 1.1em; /* Slightly larger font */
+            padding: 8px; /* Increased padding */
+            border: 1px solid #7a7ae0; /* Border color */
+            background-color: #2a2a4a; /* Darker background */
+            color: #e0e0e0; /* Lighter text */
+            width: 60px; /* Increased width */
             text-align: center;
+            border-radius: 4px; /* Rounded corners */
         }
 
         #highScoreEntry button {
-            font-family: 'Courier New', Courier, monospace;
-            margin-left: 10px;
-            padding: 5px 10px;
+            font-family: 'Inter', sans-serif; /* Use Inter font */
+            margin-left: 15px; /* Increased margin */
+            padding: 8px 15px; /* Increased padding */
             cursor: pointer;
-            background-color: #333;
-            color: #87CEEB;
-            border: 1px solid #87CEEB;
-            border-radius: 3px;
+            background: linear-gradient(to bottom, #6a6a8a, #4a4a6a); /* Subtle gradient */
+            color: #e0e0e0; /* Lighter text */
+            border: 1px solid #7a7ae0; /* Border color */
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            transition: background-color .2s, color .2s, box-shadow .2s;
         }
 
-        #highScoreEntry button:hover {
-            background-color: #87CEEB;
-            color: #111;
+         #highScoreEntry button:hover {
+            background: linear-gradient(to bottom, #7a7ae0, #6a6a8a); /* Gradient on hover */
+            color: #ffffff;
+            box-shadow: 0 0 8px rgba(122, 122, 224, 0.7); /* Glow effect */
         }
+
 
         #nameError {
             color: #FF6347;
-            font-size: 0.85em;
-            margin-top: 8px;
+            font-size: 0.9em; /* Slightly larger font */
+            margin-top: 10px; /* Increased margin */
             display: none;
         }
 
-        /* Touch Controls Styles */
+        /* Touch Controls Styles - Refactored */
         #touchControls {
             display: none; /* Hidden by default */
             justify-content: space-around;
             width: 100%; /* Fill the width of the parent #gameArea */
-            margin-top: 15px;
+            margin-top: 20px; /* Increased margin */
              box-sizing: border-box; /* Include padding in width */
              padding: 0 5px; /* Add some padding */
         }
 
         .touch-button {
-            padding: 15px 25px;
-            font-size: 1.2em;
-            font-family: 'Courier New', Courier, monospace;
+            padding: 15px 20px; /* Adjusted padding */
+            font-size: 1.1em; /* Adjusted font size */
+            font-family: 'Inter', sans-serif; /* Use Inter font */
             cursor: pointer;
-            background-color: #333;
-            color: #87CEEB;
-            border: 1px solid #87CEEB;
-            box-shadow: 0 0 5px #87CEEB inset;
-            transition: background-color .2s, color .2s;
+            background: linear-gradient(to bottom, #6a6a8a, #4a4a6a); /* Subtle gradient */
+            color: #e0e0e0; /* Lighter text */
+            border: 1px solid #7a7ae0; /* Border color */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow */
+            transition: background-color .2s, color .2s, box-shadow .2s;
             border-radius: 5px;
             user-select: none; /* Prevent text selection on touch */
             -webkit-user-select: none; /* Safari */
@@ -295,6 +333,7 @@
             flex-grow: 1; /* Allow buttons to grow */
             margin: 0 5px; /* Space between buttons */
             text-align: center;
+            font-weight: 700;
         }
 
         .touch-button:first-child {
@@ -307,9 +346,9 @@
 
 
         .touch-button:active {
-             background-color: #87CEEB;
-             color: #111;
-             box-shadow: 0 0 10px #87CEEB;
+             background: linear-gradient(to bottom, #7a7ae0, #6a6a8a); /* Gradient on active */
+             color: #ffffff;
+             box-shadow: 0 0 10px rgba(122, 122, 224, 0.7); /* Glow effect */
         }
 
         /* Media Query for smaller screens (e.g., smartphones) */
@@ -511,6 +550,10 @@
         const shootButton = document.getElementById('shootButton');
         const moveRightButton = document.getElementById('moveRightButton');
 
+        // ADDED: Starfield background variables
+        const NUM_STARS = 200; // Number of stars
+        const stars = []; // Array to hold star objects
+        const BACKGROUND_SCROLL_SPEED = 0.5; // Slower than word blocks
 
         // --- Audio Setup (Identical) ---
         let audioCtx; let shootSoundGain, goodHitSoundGain, badHitSoundGain; function setupAudio() { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); shootSoundGain = audioCtx.createGain(); shootSoundGain.gain.value = 0.3; shootSoundGain.connect(audioCtx.destination); goodHitSoundGain = audioCtx.createGain(); goodHitSoundGain.gain.value = 0.4; goodHitSoundGain.connect(audioCtx.destination); badHitSoundGain = audioCtx.createGain(); badHitSoundGain.gain.value = 0.5; badHitSoundGain.connect(audioCtx.destination); } catch (e) { console.warn("Web Audio API failed.", e); audioCtx = null; } } setupAudio(); function playSound(type, frequency, duration, volumeNode) { if (!audioCtx) return; const oscillator = audioCtx.createOscillator(); const gainNode = audioCtx.createGain(); oscillator.type = type; oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime); gainNode.gain.setValueAtTime(0, audioCtx.currentTime); gainNode.gain.linearRampToValueAtTime(1.0, audioCtx.currentTime + duration * 0.1); gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration); oscillator.connect(gainNode); gainNode.connect(volumeNode); oscillator.start(audioCtx.currentTime); oscillator.stop(audioCtx.currentTime + duration); } function playShootSound() { playSound('triangle', 880, 0.1, shootSoundGain); playSound('square', 440, 0.08, shootSoundGain); } function playGoodHitSound() { playSound('sine', 523.25, 0.3, goodHitSoundGain); playSound('sine', 783.99, 0.3, goodHitSoundGain); } function playBadHitSound() { playSound('sawtooth', 130.81, 0.4, badHitSoundGain); playSound('noise', 50, 0.3, badHitSoundGain); }
@@ -708,7 +751,7 @@
             }
 
             // --- Rest of the function (layout calculation, adding to activeWordPairs) remains the same ---
-            ctx.font = '16px "Courier New", Courier, monospace';
+            ctx.font = '16px "Courier New", Courier, monospace'; // Keep monospace for words
             const wordPairWidth = Math.max(ctx.measureText(englishWord).width, ctx.measureText(spanishWord).width) + 20;
             const wordPairHeight = 50;
 
@@ -730,10 +773,28 @@
             activeWordPairs.push({ // Add to activeWordPairs
                 x: randomX, y: -wordPairHeight, englishWord: englishWord, spanishWord: spanishWord,
                 isTrue: isTrue, speed: currentWordPairSpeed, width: wordPairWidth, height: wordPairHeight,
-                bgColor: 'rgba(60, 60, 80, 0.5)', strokeColor: '#708090',
+                // MODIFIED: Block styling
+                bgColor: 'rgba(60, 80, 100, 0.7)', /* Slightly more vibrant blueish */
+                strokeColor: '#a0b0c0', /* Lighter border */
                 isDestroyed: false, destroyTime: 0, destructionType: null,
                 posPoints: points[0], negPoints: points[1],
-                draw() { ctx.fillStyle = this.bgColor; ctx.strokeStyle = this.strokeColor; ctx.lineWidth = 1; ctx.fillRect(this.x, this.y, this.width, this.height); ctx.strokeRect(this.x, this.y, this.width, this.height); ctx.font = '16px "Courier New", Courier, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#FFFFFF'; ctx.fillText(this.englishWord, this.x + this.width / 2, this.y + this.height * 0.3); ctx.fillStyle = '#FFFFE0'; ctx.fillText(this.spanishWord, this.x + this.width / 2, this.y + this.height * 0.7); },
+                draw() {
+                    ctx.fillStyle = this.bgColor;
+                    ctx.strokeStyle = this.strokeColor;
+                    ctx.lineWidth = 2; /* Thicker border */
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+                    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+                    ctx.font = 'bold 18px "Courier New", Courier, monospace'; /* Slightly larger and bold font */
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillStyle = '#FFFFFF'; /* White for English word */
+                    ctx.fillText(this.englishWord, this.x + this.width / 2, this.y + this.height * 0.35); /* Adjusted vertical position */
+
+                    ctx.font = '16px "Courier New", Courier, monospace'; /* Normal font for Spanish word */
+                    ctx.fillStyle = '#E0E0E0'; /* Lighter gray for Spanish word */
+                    ctx.fillText(this.spanishWord, this.x + this.width / 2, this.y + this.height * 0.7); /* Adjusted vertical position */
+                },
                 update() { if (!this.isDestroyed) { this.y += this.speed; } }
             });
         }
@@ -773,11 +834,44 @@
             currentWordPairSpeed = Math.min(maxSpeed, currentWordPairSpeed);
         }
 
-        // --- MODIFIED: Game Loop (Uses activeWordPairs) ---
+        // ADDED: Function to create initial stars
+        function createStars() {
+            stars.length = 0; // Clear existing stars
+            for (let i = 0; i < NUM_STARS; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 0.5, // Star size between 0.5 and 2.5
+                    alpha: Math.random() * 0.5 + 0.5 // Star alpha between 0.5 and 1.0
+                });
+            }
+        }
+
+        // MODIFIED: Game Loop (Draw background, update & draw elements)
         function updateGame() {
             if (gameOver) { return; }
             animationFrameId = requestAnimationFrame(updateGame);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // ADDED: Draw the starfield background
+            ctx.fillStyle = '#111122'; // Base dark background color
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; // White stars with slight transparency
+            stars.forEach(star => {
+                // Update star position
+                star.y += BACKGROUND_SCROLL_SPEED;
+                // If star goes off bottom, reset to top with random x
+                if (star.y > canvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * canvas.width;
+                }
+                // Draw star
+                ctx.globalAlpha = star.alpha;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+            });
+             ctx.globalAlpha = 1.0; // Reset alpha
+
 
             // Player movement based on keysPressed (keyboard or touch)
             if (keysPressed['arrowleft']) { player.moveLeft(); }
@@ -873,7 +967,7 @@
             gameAreaDiv.style.display = 'none';
         }
 
-        // MODIFIED: Reset Game - Update player X and Y position based on current canvas size
+        // MODIFIED: Reset Game - Update player X and Y position based on current canvas size, create stars
         function resetGame() {
              score = 0; gameTimeRemaining = GAME_DURATION_SECONDS; gameOver = false;
              activeWordPairs = []; // Reset activeWordPairs
@@ -893,6 +987,10 @@
              gameOverScreen.style.display = 'none';
              gameSetupDiv.style.display = 'flex'; // Show setup again to choose theme
              gameAreaDiv.style.display = 'none'; // Hide game area
+
+             // ADDED: Create stars on reset
+             createStars();
+
              if (timerIntervalId) clearInterval(timerIntervalId); timerIntervalId = null;
              if (animationFrameId) cancelAnimationFrame(animationFrameId); animationFrameId = null;
         }
@@ -999,14 +1097,20 @@
         // MODIFIED: Canvas Resize Observer - Update player Y position and redraw on resize
         const resizeObserver = new ResizeObserver(entries => {
             for (let entry of entries) {
-                const { width } = entry.contentRect;
-                 // The canvas width is now controlled by the parent #gameArea max-width
-                 // The canvas height is automatically set by aspect-ratio based on its width
-                 const height = canvas.height; // Get the height set by aspect-ratio
+                // The canvas width and height are now controlled by CSS and aspect-ratio
+                // Get the actual rendered dimensions
+                const { width, height } = entry.contentRect;
+
+                // Update canvas attributes to match rendered size for drawing accuracy
+                canvas.width = width;
+                canvas.height = height;
 
                 // Update player X and Y position based on the new canvas size
                 player.x = canvas.width / 2 - player.width / 2;
                 player.y = canvas.height - player.height - PLAYER_BOTTOM_PADDING;
+
+                // Recreate stars on resize to fill the new canvas dimensions
+                createStars();
 
 
                 // Redraw game elements after resize (optional, but good practice)
@@ -1067,7 +1171,7 @@
          // Optional: Handle initial canvas size on load
          window.addEventListener('load', () => {
              // The canvas width and height will be set by CSS and aspect-ratio
-             // The resize observer will handle the initial player positioning
+             // The resize observer will handle the initial player positioning and star creation
          });
 
 
